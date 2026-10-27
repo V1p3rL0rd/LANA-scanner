@@ -33,11 +33,11 @@ final class ToolRunner: ObservableObject {
             Task { @MainActor [weak self] in self?.append(text) }
         }
         p.terminationHandler = { [weak self] proc in
-            let status = proc.terminationStatus
+            let status = Int(proc.terminationStatus)
             Task { @MainActor [weak self] in
                 pipe.fileHandleForReading.readabilityHandler = nil
                 self?.isRunning = false
-                self?.append("\n[завершено, код \(status)]\n")
+                self?.append("\n" + String(localized: "[finished, exit code \(status)]") + "\n")
             }
         }
 
@@ -47,7 +47,7 @@ final class ToolRunner: ObservableObject {
             process = p
             isRunning = true
         } catch {
-            append("Ошибка запуска: \(error.localizedDescription)\n")
+            append(String(localized: "Failed to launch: \(error.localizedDescription)") + "\n")
         }
     }
 

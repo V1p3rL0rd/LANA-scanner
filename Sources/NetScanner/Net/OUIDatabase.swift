@@ -33,7 +33,7 @@ final class OUIDatabase: @unchecked Sendable {
         let v = map[key]
         lock.unlock()
         if let v { return v }
-        return b[0] & 0x02 != 0 ? "Случайный MAC (приватный адрес)" : nil
+        return b[0] & 0x02 != 0 ? String(localized: "Random MAC (private address)") : nil
     }
 
     private func loadIfNeeded() {

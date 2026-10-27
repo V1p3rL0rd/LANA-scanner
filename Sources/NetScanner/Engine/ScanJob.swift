@@ -66,10 +66,10 @@ final class ScanJob: @unchecked Sendable {
             scanPorts(alive)
         }
         if names.wait(timeout: .now()) == .timedOut {
-            store.setPhase("Определение имён…", total: 0)
+            store.setPhase(String(localized: "Resolving names…"), total: 0)
             names.wait()
         }
-        store.setPhase(cancel.isSet ? "Остановлено" : "Готово", total: 0)
+        store.setPhase(cancel.isSet ? String(localized: "Stopped") : String(localized: "Done"), total: 0)
     }
 
     // MARK: - Phase 1
@@ -77,7 +77,7 @@ final class ScanJob: @unchecked Sendable {
     private func discoverHosts(_ targetSet: Set<UInt32>) {
         let localTargets = targets.filter { ip in context.interfaces.contains { $0.contains(ip) } }
         let probes = targets.flatMap { ip in Self.discoveryPorts.map { ProbeTarget(ip: ip, port: $0) } }
-        store.setPhase("Поиск устройств…", total: probes.count)
+        store.setPhase(String(localized: "Discovering devices…"), total: probes.count)
 
         let group = DispatchGroup()
         queue.async(group: group) { ARPTable.poke(localTargets) }
@@ -164,7 +164,7 @@ final class ScanJob: @unchecked Sendable {
 
     private func scanPorts(_ hosts: [IPv4]) {
         let probes = hosts.flatMap { ip in ports.map { ProbeTarget(ip: ip, port: $0) } }
-        store.setPhase("Сканирование портов…", total: probes.count)
+        store.setPhase(String(localized: "Scanning ports…"), total: probes.count)
 
         var open: [ProbeTarget] = []
         ConnectScanner.run(probes, timeout: timeout, maxParallel: maxParallel, cancel: cancel) { t, outcome in
@@ -180,7 +180,7 @@ final class ScanJob: @unchecked Sendable {
         for ip in hosts { store.update(ip) { $0.portsScanned = true } }
 
         guard settings.grabBanners, !open.isEmpty, !cancel.isSet else { return }
-        store.setPhase("Определение сервисов…", total: open.count)
+        store.setPhase(String(localized: "Detecting services…"), total: open.count)
         let probeTimeout = max(1.5, timeout)
         parallelForEach(open, maxConcurrent: 16, cancel: cancel) { t in
             let r = ServiceProbe.probe(t.ip, port: t.port, timeout: probeTimeout)

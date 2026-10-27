@@ -78,6 +78,13 @@ else
   warn "Assets/AppIcon.icns not found — building without an icon"
 fi
 
+# UI localizations (English base + Russian). macOS picks one from the system language.
+for lproj in "${ROOT}"/Localization/*.lproj; do
+  [[ -d "${lproj}" ]] || continue
+  for strings in "${lproj}"/*.strings; do plutil -lint "${strings}" >/dev/null; done
+  cp -R "${lproj}" "${BUNDLE}/Contents/Resources/"
+done
+
 # Optional: bundle a vendor DB so the app works offline from the first launch.
 OUI_CACHE="${HOME}/Library/Application Support/NetScanner/oui.txt"
 if [[ -s "${OUI_CACHE}" ]]; then
@@ -91,6 +98,8 @@ cat > "${BUNDLE}/Contents/Info.plist" <<PLIST
 <plist version="1.0">
 <dict>
   <key>CFBundleName</key>                 <string>${APP_NAME}</string>
+  <key>CFBundleDevelopmentRegion</key>    <string>en</string>
+  <key>CFBundleLocalizations</key>        <array><string>en</string><string>ru</string></array>
   <key>CFBundleDisplayName</key>          <string>${APP_NAME}</string>
   <key>CFBundleIdentifier</key>           <string>${BUNDLE_ID}</string>
   <key>CFBundleExecutable</key>           <string>${EXEC_NAME}</string>
@@ -104,7 +113,7 @@ cat > "${BUNDLE}/Contents/Info.plist" <<PLIST
   <key>NSPrincipalClass</key>             <string>NSApplication</string>
   <!-- macOS 15+: required for the Local Network privacy prompt -->
   <key>NSLocalNetworkUsageDescription</key>
-  <string>LANA Scanner сканирует локальную сеть, чтобы найти устройства и открытые порты.</string>
+  <string>LANA Scanner scans your local network to find devices and open ports.</string>
 </dict>
 </plist>
 PLIST

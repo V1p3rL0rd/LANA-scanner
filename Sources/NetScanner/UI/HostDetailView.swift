@@ -13,11 +13,11 @@ struct HostDetailView: View {
         add("DNS", host.dnsName)
         add("mDNS", host.mdnsName)
         add("NetBIOS", host.netbiosName)
-        add("Рабочая группа", host.workgroup)
+        add(String(localized: "Workgroup"), host.workgroup)
         add("MAC", host.mac)
-        add("Производитель", host.vendor)
-        add("Отклик", host.rttText)
-        add("Обнаружен", host.methods.map(\.rawValue).sorted().joined(separator: ", "))
+        add(String(localized: "Vendor"), host.vendor)
+        add(String(localized: "Latency"), host.rttText)
+        add(String(localized: "Discovered via"), host.methods.map(\.title).sorted().joined(separator: ", "))
         return rows
     }
 
@@ -51,9 +51,9 @@ struct HostDetailView: View {
                     .font(.title2.bold())
                     .textSelection(.enabled)
                 HStack(spacing: 6) {
-                    if host.isLocalMachine { Badge(text: "Этот Mac", color: .blue) }
-                    if host.isGateway { Badge(text: "Шлюз", color: .orange) }
-                    if host.onlyARP { Badge(text: "Только ARP", color: .yellow) }
+                    if host.isLocalMachine { Badge(text: String(localized: "This Mac"), color: .blue) }
+                    if host.isGateway { Badge(text: String(localized: "Gateway"), color: .orange) }
+                    if host.onlyARP { Badge(text: String(localized: "ARP only"), color: .yellow) }
                 }
             }
         }
@@ -62,7 +62,7 @@ struct HostDetailView: View {
     private var actions: some View {
         let links = HostLinks.links(for: host)
         return VStack(alignment: .leading, spacing: 8) {
-            Text("Действия").font(.headline)
+            Text("Actions").font(.headline)
             LazyVGrid(columns: [GridItem(.adaptive(minimum: 140), alignment: .leading)], alignment: .leading, spacing: 6) {
                 ForEach(links) { link in
                     Button { vm.open(link.url) } label: {
@@ -82,7 +82,7 @@ struct HostDetailView: View {
                     }
                 }
                 Button { vm.copy(host.ip.description) } label: {
-                    Label("Копировать IP", systemImage: "doc.on.doc").frame(maxWidth: .infinity, alignment: .leading)
+                    Label("Copy IP", systemImage: "doc.on.doc").frame(maxWidth: .infinity, alignment: .leading)
                 }
             }
         }
@@ -91,14 +91,14 @@ struct HostDetailView: View {
     private var ports: some View {
         VStack(alignment: .leading, spacing: 8) {
             HStack {
-                Text("Открытые TCP-порты").font(.headline)
+                Text("Open TCP Ports").font(.headline)
                 Spacer()
-                Button { vm.rescanPorts(host) } label: { Label("Пересканировать", systemImage: "arrow.clockwise") }
+                Button { vm.rescanPorts(host) } label: { Label("Rescan", systemImage: "arrow.clockwise") }
                     .disabled(vm.isScanning)
                     .controlSize(.small)
             }
             if host.openPorts.isEmpty {
-                Text(host.portsScanned ? "Открытых портов не найдено" : "Порты не сканировались")
+                Text(LocalizedStringKey(host.portsScanned ? "No open ports found" : "Ports not scanned"))
                     .foregroundStyle(.secondary)
             } else {
                 VStack(alignment: .leading, spacing: 0) {

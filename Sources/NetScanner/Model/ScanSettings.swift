@@ -7,12 +7,12 @@ enum PortPreset: String, CaseIterable, Identifiable, Codable {
 
     var title: String {
         switch self {
-        case .none: return "Без портов"
+        case .none: return String(localized: "No ports")
         case .top100: return "Top 100"
         case .top1000: return "Top 1000"
         case .wellKnown: return "1–1024"
-        case .all: return "Все 1–65535"
-        case .custom: return "Свой список"
+        case .all: return String(localized: "All 1–65535")
+        case .custom: return String(localized: "Custom list")
         }
     }
 }

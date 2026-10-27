@@ -9,13 +9,13 @@ enum InputError: LocalizedError, Equatable {
     var errorDescription: String? {
         switch self {
         case .empty:
-            return "Укажите диапазон адресов, например 192.168.1.0/24"
+            return String(localized: "Enter an address range, e.g. 192.168.1.0/24")
         case .invalidTarget(let t):
-            return "Не удалось разобрать адрес или диапазон: «\(t)»"
+            return String(localized: "Cannot parse address or range: “\(t)”")
         case .tooManyHosts(let n):
-            return "Слишком большой диапазон (\(n) адресов). Максимум — \(TargetParser.maxHosts)."
+            return String(localized: "Range too large (\(n) addresses). Maximum is \(TargetParser.maxHosts).")
         case .invalidPorts(let t):
-            return "Неверная спецификация портов: «\(t)». Пример: 22,80,443,8000-8100"
+            return String(localized: "Invalid port list: “\(t)”. Example: 22,80,443,8000-8100")
         }
     }
 }

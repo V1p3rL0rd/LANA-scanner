@@ -90,7 +90,7 @@ enum ServiceProbe {
         if printable * 10 >= sample.count * 8, !firstLine.isEmpty {
             return Result(service: nil, banner: firstLine)
         }
-        return Result(service: nil, banner: "\(data.count) байт бинарных данных")
+        return Result(service: nil, banner: String(localized: "\(data.count) bytes of binary data"))
     }
 
     static func sanitize(_ s: String) -> String {

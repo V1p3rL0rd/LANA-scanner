@@ -3,6 +3,12 @@
 All notable changes to this project are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses [Semantic Versioning](https://semver.org/).
 
+## [1.1.0] - 2026-10-27
+
+### Added
+- English user interface; Russian is kept as a localization and selected automatically from the macOS system language.
+- `scripts/check-l10n.py` (run in CI) to verify translation keys and format placeholders.
+
 ## [1.0.0] - 2026-10-27
 
 ### Added

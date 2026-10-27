@@ -22,7 +22,9 @@ jobs:
       - name: shellcheck
         run: shellcheck scripts/*.sh
       - name: python syntax
-        run: python3 -m py_compile scripts/gen-portdata.py
+        run: python3 -m py_compile scripts/gen-portdata.py scripts/check-l10n.py
+      - name: localization consistency
+        run: python3 scripts/check-l10n.py
 
   build:
     runs-on: macos-15
@@ -49,6 +51,8 @@ jobs:
           echo "archs: $ARCHS"
           [[ "$ARCHS" == *x86_64* && "$ARCHS" == *arm64* ]]
           plutil -p "$APP/Contents/Info.plist"
+          test -f "$APP/Contents/Resources/ru.lproj/Localizable.strings"
+          test -f "$APP/Contents/Resources/en.lproj/Localizable.strings"
 
       - name: Package
         run: ditto -c -k --keepParent "build/LANA Scanner.app" "LANA-Scanner-ci-macOS.zip"

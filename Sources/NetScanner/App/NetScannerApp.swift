@@ -12,16 +12,16 @@ struct NetScannerApp: App {
                 .frame(minWidth: 980, minHeight: 560)
         }
         .commands {
-            CommandMenu("Сканирование") {
-                Button("Сканировать") { vm.startScan() }
+            CommandMenu("Scan") {
+                Button("Start Scan") { vm.startScan() }
                     .keyboardShortcut("r")
                     .disabled(vm.isScanning)
-                Button("Остановить") { vm.stopScan() }
+                Button("Stop Scan") { vm.stopScan() }
                     .keyboardShortcut(".")
                     .disabled(!vm.isScanning)
                 Divider()
-                Button("Обновить список интерфейсов") { vm.reloadInterfaces() }
-                Button("Обновить базу производителей") { Task { await vm.updateOUI() } }
+                Button("Refresh Interfaces") { vm.reloadInterfaces() }
+                Button("Update Vendor Database") { Task { await vm.updateOUI() } }
             }
         }
 

@@ -1,10 +1,12 @@
 import Foundation
 
 enum DiscoveryMethod: String, Codable, CaseIterable, Hashable, Sendable {
-    case local = "Этот Mac"
+    case local = "Local"
     case icmp = "ICMP"
     case tcp = "TCP"
     case arp = "ARP"
+
+    var title: String { self == .local ? String(localized: "This Mac") : rawValue }
 }
 
 struct PortResult: Identifiable, Hashable, Sendable {
@@ -65,7 +67,7 @@ struct HostInfo: Identifiable, Hashable, Sendable {
 
     var rttText: String {
         guard let r = rttMs else { return "" }
-        return r < 1 ? "<1 мс" : String(format: "%.0f мс", r)
+        return r < 1 ? String(localized: "<1 ms") : String(localized: "\(String(format: "%.0f", r)) ms")
     }
 
     func matches(_ query: String) -> Bool {

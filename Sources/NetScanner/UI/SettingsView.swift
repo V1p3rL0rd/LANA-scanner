@@ -4,47 +4,47 @@ struct SettingsView: View {
     @ObservedObject var vm: ScanViewModel
 
     private var portSummary: String {
-        if vm.settings.portPreset == .none { return "Только обнаружение устройств" }
-        guard let ports = try? vm.settings.ports() else { return "Ошибка в списке портов" }
-        let note = ports.count > 5_000 ? " — медленно на больших диапазонах" : ""
-        return "\(ports.count) портов на хост\(note)"
+        if vm.settings.portPreset == .none { return String(localized: "Device discovery only") }
+        guard let ports = try? vm.settings.ports() else { return String(localized: "Error in port list") }
+        let summary = String(localized: "Ports per host: \(ports.count)")
+        return ports.count > 5_000 ? summary + " — " + String(localized: "slow on large ranges") : summary
     }
 
     var body: some View {
         Form {
-            Section("Порты") {
-                Picker("Набор", selection: $vm.settings.portPreset) {
+            Section("Ports") {
+                Picker("Preset", selection: $vm.settings.portPreset) {
                     ForEach(PortPreset.allCases) { Text($0.title).tag($0) }
                 }
                 if vm.settings.portPreset == .custom {
-                    TextField("Список", text: $vm.settings.customPorts, prompt: Text("22,80,443,8000-8100"))
+                    TextField("List", text: $vm.settings.customPorts, prompt: Text("22,80,443,8000-8100"))
                         .font(.system(.body, design: .monospaced))
                 }
                 Text(portSummary).font(.caption).foregroundStyle(.secondary)
             }
 
-            Section("Производительность") {
+            Section("Performance") {
                 Stepper(value: $vm.settings.timeoutMs, in: 100...5_000, step: 100) {
-                    Text("Таймаут соединения: \(vm.settings.timeoutMs) мс")
+                    Text("Connection timeout: \(vm.settings.timeoutMs) ms")
                 }
                 Stepper(value: $vm.settings.maxParallel, in: 32...4_096, step: 32) {
-                    Text("Параллельных соединений: \(vm.settings.maxParallel)")
+                    Text("Parallel connections: \(vm.settings.maxParallel)")
                 }
-                Text("Для Wi-Fi и медленных сетей увеличьте таймаут до 1500–2000 мс.")
+                Text("On Wi-Fi and slow networks raise the timeout to 1500–2000 ms.")
                     .font(.caption).foregroundStyle(.secondary)
             }
 
-            Section("Дополнительно") {
-                Toggle("Определять имена (DNS, mDNS, NetBIOS)", isOn: $vm.settings.resolveNames)
-                Toggle("Определять сервисы и версии (баннеры)", isOn: $vm.settings.grabBanners)
+            Section("Extras") {
+                Toggle("Resolve names (DNS, mDNS, NetBIOS)", isOn: $vm.settings.resolveNames)
+                Toggle("Detect services and versions (banners)", isOn: $vm.settings.grabBanners)
             }
 
-            Section("База производителей (IEEE OUI)") {
+            Section("Vendor Database (IEEE OUI)") {
                 HStack {
-                    Text(vm.ouiCount > 0 ? "\(vm.ouiCount) записей" : "Не загружена")
+                    if vm.ouiCount > 0 { Text("Entries: \(vm.ouiCount)") } else { Text("Not loaded") }
                     Spacer()
                     if vm.ouiUpdating { ProgressView().controlSize(.small) }
-                    Button("Обновить") { Task { await vm.updateOUI() } }
+                    Button("Update") { Task { await vm.updateOUI() } }
                         .disabled(vm.ouiUpdating)
                 }
             }
@@ -64,9 +64,9 @@ struct ToolOutputView: View {
                 Spacer()
                 if runner.isRunning {
                     ProgressView().controlSize(.small)
-                    Button("Стоп") { runner.stop() }
+                    Button("Stop") { runner.stop() }
                 }
-                Button("Закрыть") {
+                Button("Close") {
                     runner.stop()
                     dismiss()
                 }

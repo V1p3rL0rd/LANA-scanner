@@ -18,7 +18,7 @@
 
 LANA Scanner finds every device on your LAN, shows its IP, hostname, MAC address and vendor, scans open TCP ports, identifies services from their banners and gives you one‑click actions (web UI, SSH, SMB, RDP, VNC, ping, traceroute, Wake‑on‑LAN). It is a single native SwiftUI app: no root, no Homebrew, no third‑party dependencies.
 
-> The user interface is currently in Russian.
+> The interface is available in **English** and **Russian** and follows the macOS system language.
 
 ## Features
 
@@ -107,19 +107,30 @@ Sources/NetScanner/
   UI/      ContentView, HostTableView, HostDetailView, HostActions, SettingsView
 Tests/NetScannerTests/       parser and protocol tests
 Assets/                      app icon (SVG source + .icns)
+Localization/                en.lproj / ru.lproj UI strings (copied into the app bundle)
 scripts/                     build-app.sh, gen-portdata.py
 .github/workflows/           CI (tests + build) and release (published release → zipped .app attached)
 ```
 
 ## Maintenance
 
-- **Vendor database:** in the app menu *Сканирование → Обновить базу производителей* ("Update vendor database"). The source is IEEE, with `nmap-mac-prefixes` as a fallback. It is stored in `~/Library/Application Support/NetScanner/oui.txt`, and `build-app.sh` bundles it when present, so builds work offline.
+- **Vendor database:** menu *Scan → Update Vendor Database*. The source is IEEE, with `nmap-mac-prefixes` as a fallback. It is stored in `~/Library/Application Support/NetScanner/oui.txt`, and `build-app.sh` bundles it when present, so builds work offline.
 - **Top‑ports refresh:**
   ```bash
   curl -fsSLo /tmp/nmap-services https://raw.githubusercontent.com/nmap/nmap/master/nmap-services
   python3 scripts/gen-portdata.py /tmp/nmap-services
   ```
 - **Uninstall:** delete `/Applications/LANA Scanner.app` and `~/Library/Application Support/NetScanner/`, then run `defaults delete com.github.lanascanner`.
+
+## Localization
+
+UI strings live in `Localization/<lang>.lproj/Localizable.strings`. The keys are the English strings used in the Swift code. To add a language:
+
+1. Copy `Localization/en.lproj` to `Localization/<lang>.lproj` and translate the right-hand side of every line, keeping `%lld` / `%@` placeholders.
+2. Add the language code to `CFBundleLocalizations` in `scripts/build-app.sh`.
+3. Run `python3 scripts/check-l10n.py`: it verifies keys and placeholders (CI runs it too).
+
+To test another language without changing the system language: `open -n "build/LANA Scanner.app" --args -AppleLanguages "(ru)"`.
 
 ## Releasing
 

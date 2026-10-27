@@ -121,9 +121,18 @@ Sources/NetScanner/
   UI/      ContentView, HostTableView, HostDetailView, HostActions, SettingsView
 Tests/NetScannerTests/ParsingTests.swift
 Assets/                      иконка (исходник SVG + .icns)
+Localization/                строки интерфейса en.lproj / ru.lproj (копируются в бандл)
 scripts/build-app.sh, scripts/gen-portdata.py
 .github/workflows/           CI (тесты + сборка) и релиз (опубликованный релиз → zip с .app)
 ```
+
+## Локализация
+
+Интерфейс на английском и русском, язык выбирается по системному языку macOS. Строки лежат в `Localization/<язык>.lproj/Localizable.strings`, ключи — это английские строки из Swift-кода.
+
+Добавить язык: скопируйте `Localization/en.lproj` в `Localization/<код>.lproj`, переведите правую часть каждой строки, сохранив `%lld` / `%@`, добавьте код языка в `CFBundleLocalizations` в `scripts/build-app.sh` и запустите `python3 scripts/check-l10n.py` (CI запускает его тоже).
+
+Проверить другой язык без смены системного: `open -n "build/LANA Scanner.app" --args -AppleLanguages "(en)"`.
 
 ## Релиз
 

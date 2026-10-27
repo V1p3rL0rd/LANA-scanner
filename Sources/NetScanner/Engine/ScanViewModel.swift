@@ -132,7 +132,7 @@ final class ScanViewModel: ObservableObject {
             store.reapplyVendors()
         } catch {
             if !silent {
-                errorMessage = "Не удалось обновить базу производителей: \(error.localizedDescription)"
+                errorMessage = String(localized: "Could not update the vendor database: \(error.localizedDescription)")
             }
         }
     }
@@ -150,7 +150,7 @@ final class ScanViewModel: ObservableObject {
         guard let mac = host.mac else { return }
         let broadcasts = interfaces.filter { $0.contains(host.ip) }.map(\.broadcast)
         if !WakeOnLAN.send(mac: mac, broadcasts: broadcasts) {
-            errorMessage = "Не удалось отправить Wake-on-LAN пакет на \(mac)"
+            errorMessage = String(localized: "Could not send the Wake-on-LAN packet to \(mac)")
         }
     }
 

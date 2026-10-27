@@ -36,7 +36,7 @@ struct ContentView: View {
         .sheet(isPresented: toolSheetBinding) {
             if let runner = vm.toolRunner { ToolOutputView(runner: runner) }
         }
-        .alert("Ошибка", isPresented: errorBinding) {
+        .alert("Error", isPresented: errorBinding) {
             Button("OK", role: .cancel) {}
         } message: {
             Text(vm.errorMessage ?? "")
@@ -50,7 +50,7 @@ struct ContentView: View {
             Button {
                 vm.isScanning ? vm.stopScan() : vm.startScan()
             } label: {
-                Label(vm.isScanning ? "Стоп" : "Сканировать",
+                Label(LocalizedStringKey(vm.isScanning ? "Stop" : "Start Scan"),
                       systemImage: vm.isScanning ? "stop.fill" : "play.fill")
                     .frame(minWidth: 110)
             }
@@ -69,30 +69,30 @@ struct ContentView: View {
                 ForEach(vm.interfaces) { iface in
                     Button(iface.label) { vm.rangeText = iface.suggestedRange }
                 }
-                if vm.interfaces.isEmpty { Text("Нет активных IPv4-интерфейсов") }
+                if vm.interfaces.isEmpty { Text("No active IPv4 interfaces") }
                 Divider()
-                Button("Обновить список интерфейсов") { vm.reloadInterfaces() }
+                Button("Refresh Interfaces") { vm.reloadInterfaces() }
             } label: {
-                Label("Сеть", systemImage: "network")
+                Label("Network", systemImage: "network")
             }
             .fixedSize()
             .disabled(vm.isScanning)
 
-            Picker("Порты", selection: $vm.settings.portPreset) {
+            Picker("Ports", selection: $vm.settings.portPreset) {
                 ForEach(PortPreset.allCases) { Text($0.title).tag($0) }
             }
             .fixedSize()
             .disabled(vm.isScanning)
 
             Button { ui.showSettings.toggle() } label: { Image(systemName: "gearshape") }
-                .help("Настройки сканирования")
+                .help("Scan settings")
                 .popover(isPresented: $ui.showSettings, arrowEdge: .bottom) {
                     SettingsView(vm: vm).frame(width: 440)
                 }
 
             Spacer(minLength: 8)
 
-            TextField("Фильтр: IP, имя, MAC, порт", text: $ui.filter)
+            TextField("Filter: IP, name, MAC, port", text: $ui.filter)
                 .textFieldStyle(.roundedBorder)
                 .frame(width: 200)
         }
@@ -108,7 +108,7 @@ struct ContentView: View {
         } else {
             VStack(spacing: 8) {
                 Image(systemName: "network").font(.system(size: 40)).foregroundStyle(.tertiary)
-                Text("Выберите устройство").foregroundStyle(.secondary)
+                Text("Select a device").foregroundStyle(.secondary)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
@@ -148,17 +148,17 @@ struct StatusBar: View {
                         .foregroundStyle(.secondary)
                 }
             } else if let d = vm.lastScanDuration {
-                Text(String(format: "Готово за %.1f с", d))
+                Text("Done in \(String(format: "%.1f", d)) s")
             } else {
-                Text("Готов к сканированию")
+                Text("Ready to scan")
             }
             Spacer()
             if vm.ouiUpdating {
                 ProgressView().controlSize(.small)
-                Text("Загрузка базы производителей…").foregroundStyle(.secondary)
+                Text("Downloading vendor database…").foregroundStyle(.secondary)
             }
-            Text("Устройств: \(vm.hosts.count)")
-            Text("Открытых портов: \(vm.hosts.reduce(0) { $0 + $1.openPorts.count })")
+            Text("Devices: \(vm.hosts.count)")
+            Text("Open ports: \(vm.hosts.reduce(0) { $0 + $1.openPorts.count })")
         }
         .font(.callout)
         .padding(.horizontal, 12)

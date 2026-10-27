@@ -57,18 +57,18 @@ struct HostActionsMenu: View {
         Button { vm.traceroute(host) } label: {
             Label("Traceroute", systemImage: "point.topleft.down.curvedto.point.bottomright.up")
         }
-        Button { vm.rescanPorts(host) } label: { Label("Пересканировать порты", systemImage: "arrow.clockwise") }
+        Button { vm.rescanPorts(host) } label: { Label("Rescan Ports", systemImage: "arrow.clockwise") }
             .disabled(vm.isScanning)
         if host.mac != nil && !host.isLocalMachine {
             Button { vm.wake(host) } label: { Label("Wake-on-LAN", systemImage: "bolt") }
         }
         Divider()
-        Button { vm.copy(host.ip.description) } label: { Label("Копировать IP", systemImage: "doc.on.doc") }
+        Button { vm.copy(host.ip.description) } label: { Label("Copy IP", systemImage: "doc.on.doc") }
         if let mac = host.mac {
-            Button { vm.copy(mac) } label: { Label("Копировать MAC", systemImage: "doc.on.doc") }
+            Button { vm.copy(mac) } label: { Label("Copy MAC", systemImage: "doc.on.doc") }
         }
         if !host.displayName.isEmpty {
-            Button { vm.copy(host.displayName) } label: { Label("Копировать имя", systemImage: "doc.on.doc") }
+            Button { vm.copy(host.displayName) } label: { Label("Copy Name", systemImage: "doc.on.doc") }
         }
     }
 }

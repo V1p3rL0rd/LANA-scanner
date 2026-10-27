@@ -13,7 +13,7 @@ struct HostTableView: View {
             }
             .width(24)
 
-            TableColumn("Имя", value: \HostInfo.displayName) { h in
+            TableColumn("Name", value: \HostInfo.displayName) { h in
                 Text(h.displayName.isEmpty ? "—" : h.displayName)
                     .foregroundColor(h.displayName.isEmpty ? .secondary : .primary)
             }
@@ -24,7 +24,7 @@ struct HostTableView: View {
             }
             .width(min: 110, ideal: 125)
 
-            TableColumn("Производитель", value: \HostInfo.vendorSort) { h in
+            TableColumn("Vendor", value: \HostInfo.vendorSort) { h in
                 Text(h.vendor ?? "").lineLimit(1)
             }
             .width(min: 100, ideal: 180)
@@ -34,12 +34,12 @@ struct HostTableView: View {
             }
             .width(min: 130, ideal: 145)
 
-            TableColumn("Открытые порты", value: \HostInfo.openPortCount) { h in
+            TableColumn("Open Ports", value: \HostInfo.openPortCount) { h in
                 Text(h.portsSummary).lineLimit(1).help(h.portsSummary)
             }
             .width(min: 90, ideal: 160)
 
-            TableColumn("Отклик", value: \HostInfo.rttSort) { h in
+            TableColumn("Latency", value: \HostInfo.rttSort) { h in
                 Text(h.rttText).monospacedDigit().foregroundStyle(.secondary)
             }
             .width(min: 50, ideal: 60)
@@ -77,9 +77,9 @@ struct StatusIcon: View {
     }
 
     private var help: String {
-        if host.isLocalMachine { return "Этот Mac" }
-        if host.isGateway { return "Шлюз по умолчанию" }
-        if host.onlyARP { return "Отвечает только на ARP: файрвол или устаревшая запись ARP-кэша" }
-        return "В сети (" + host.methods.map(\.rawValue).sorted().joined(separator: ", ") + ")"
+        if host.isLocalMachine { return String(localized: "This Mac") }
+        if host.isGateway { return String(localized: "Default gateway") }
+        if host.onlyARP { return String(localized: "Answers ARP only: firewalled host or a stale ARP cache entry") }
+        return String(localized: "Online (\(host.methods.map(\.title).sorted().joined(separator: ", ")))")
     }
 }
