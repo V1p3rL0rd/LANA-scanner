@@ -1,0 +1,60 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: shellcheck
+        run: shellcheck scripts/*.sh
+      - name: python syntax
+        run: python3 -m py_compile scripts/gen-portdata.py
+
+  build:
+    runs-on: macos-15
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Toolchain
+        run: |
+          xcodebuild -version
+          swift --version
+
+      - name: Unit tests
+        run: swift test
+
+      - name: Build universal app bundle
+        run: ./scripts/build-app.sh --universal
+
+      - name: Verify bundle
+        run: |
+          APP="build/LANA Scanner.app"
+          codesign --verify --strict --verbose=2 "$APP"
+          ARCHS="$(lipo -archs "$APP/Contents/MacOS/NetScanner")"
+          echo "archs: $ARCHS"
+          [[ "$ARCHS" == *x86_64* && "$ARCHS" == *arm64* ]]
+          plutil -p "$APP/Contents/Info.plist"
+
+      - name: Package
+        run: ditto -c -k --keepParent "build/LANA Scanner.app" "LANA-Scanner-ci-macOS.zip"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: LANA-Scanner-macOS
+          path: LANA-Scanner-ci-macOS.zip
+          retention-days: 14
