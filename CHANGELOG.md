@@ -6,7 +6,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 ## [1.1.0] - 2026-10-27
 
 ### Added
-- English user interface; Russian is kept as a localization and selected automatically from the macOS system language.
+- English user interface; Russian is kept as a localization and selected automatically from the macOS system language (or per app in System Settings → Language & Region → Applications).
 - `scripts/check-l10n.py` (run in CI) to verify translation keys and format placeholders.
 
 ## [1.0.0] - 2026-10-27

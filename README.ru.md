@@ -128,7 +128,7 @@ scripts/build-app.sh, scripts/gen-portdata.py
 
 ## Локализация
 
-Интерфейс на английском и русском, язык выбирается по системному языку macOS. Строки лежат в `Localization/<язык>.lproj/Localizable.strings`, ключи — это английские строки из Swift-кода.
+Интерфейс на английском и русском, язык выбирается по системному языку macOS. Чтобы задать язык только для LANA Scanner: *Системные настройки → Основные → Язык и регион → Приложения → «+» → LANA Scanner*. Строки лежат в `Localization/<язык>.lproj/Localizable.strings`, ключи — это английские строки из Swift-кода.
 
 Добавить язык: скопируйте `Localization/en.lproj` в `Localization/<код>.lproj`, переведите правую часть каждой строки, сохранив `%lld` / `%@`, добавьте код языка в `CFBundleLocalizations` в `scripts/build-app.sh` и запустите `python3 scripts/check-l10n.py` (CI запускает его тоже).
 
