@@ -12,8 +12,6 @@
   <img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-blue">
 </p>
 
-<p align="center"><a href="README.ru.md">Русская версия</a></p>
-
 ---
 
 LANA Scanner finds every device on your LAN, shows its IP, hostname, MAC address and vendor, scans open TCP ports, identifies services from their banners and gives you one‑click actions (web UI, SSH, SMB, RDP, VNC, ping, traceroute, Wake‑on‑LAN). It is a single native SwiftUI app: no root, no Homebrew, no third‑party dependencies.
