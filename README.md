@@ -108,7 +108,7 @@ Sources/NetScanner/
 Tests/NetScannerTests/       parser and protocol tests
 Assets/                      app icon (SVG source + .icns)
 scripts/                     build-app.sh, gen-portdata.py
-.github/workflows/           CI (tests + build) and release (tag → zipped .app)
+.github/workflows/           CI (tests + build) and release (published release → zipped .app attached)
 ```
 
 ## Maintenance
@@ -123,11 +123,7 @@ scripts/                     build-app.sh, gen-portdata.py
 
 ## Releasing
 
-Push a version tag and GitHub Actions builds a universal app, zips it and publishes a GitHub Release:
-
-```bash
-git tag v1.0.0 && git push origin v1.0.0
-```
+Open **Releases → Draft a new release**, create a tag such as `v1.0.0`, click **Generate release notes** and **Publish**. GitHub Actions then builds a universal app and attaches `LANA-Scanner-<version>-macOS.zip` (plus a SHA-256 checksum) to the release within a few minutes.
 
 ## Acknowledgements
 

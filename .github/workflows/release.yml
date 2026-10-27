@@ -1,42 +1,42 @@
 name: Release
 
+# Publish a release in the GitHub UI (Releases → Draft a new release → tag vX.Y.Z → Publish)
+# and this workflow builds the universal app and attaches the zip to that release.
 on:
-  push:
-    tags: ["v*.*.*"]
+  release:
+    types: [published]
 
 permissions:
   contents: write
 
 jobs:
-  release:
+  build-and-attach:
     runs-on: macos-15
     timeout-minutes: 30
+    env:
+      TAG: ${{ github.event.release.tag_name }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.release.tag_name }}
 
       - name: Unit tests
         run: swift test
 
       - name: Build universal app bundle
         run: |
-          export VERSION="${GITHUB_REF_NAME#v}"
+          export VERSION="${TAG#v}"
           ./scripts/build-app.sh --universal
 
       - name: Package
         id: pkg
         run: |
-          VERSION="${GITHUB_REF_NAME#v}"
-          ZIP="LANA-Scanner-${VERSION}-macOS.zip"
+          ZIP="LANA-Scanner-${TAG#v}-macOS.zip"
           ditto -c -k --keepParent "build/LANA Scanner.app" "$ZIP"
           shasum -a 256 "$ZIP" > "$ZIP.sha256"
           echo "zip=$ZIP" >> "$GITHUB_OUTPUT"
 
-      - name: Publish GitHub Release
+      - name: Attach to release
         env:
           GH_TOKEN: ${{ github.token }}
-        run: |
-          gh release create "$GITHUB_REF_NAME" \
-            "${{ steps.pkg.outputs.zip }}" "${{ steps.pkg.outputs.zip }}.sha256" \
-            --title "LANA Scanner ${GITHUB_REF_NAME}" \
-            --generate-notes \
-            --notes "Universal (Apple Silicon + Intel) build for macOS 13+. Ad-hoc signed, not notarized — see README → Install for the one-time Gatekeeper step."
+        run: gh release upload "$TAG" "${{ steps.pkg.outputs.zip }}" "${{ steps.pkg.outputs.zip }}.sha256" --clobber

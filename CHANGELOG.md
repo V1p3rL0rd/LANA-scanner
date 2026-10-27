@@ -14,4 +14,4 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 - Host actions: open HTTP/HTTPS, SSH, SMB, RDP, VNC, FTP; ping and traceroute with live output; Wake-on-LAN; copy IP/MAC/name.
 - Sortable, filterable host table with detail pane and context menu.
 - `scripts/build-app.sh`: app bundle, ad-hoc signing, install to `/Applications`.
-- CI and tag-triggered release workflows.
+- CI workflow and a release workflow that attaches the built app to published GitHub Releases.

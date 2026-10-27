@@ -122,16 +122,12 @@ Sources/NetScanner/
 Tests/NetScannerTests/ParsingTests.swift
 Assets/                      иконка (исходник SVG + .icns)
 scripts/build-app.sh, scripts/gen-portdata.py
-.github/workflows/           CI (тесты + сборка) и релиз (тег → zip с .app)
+.github/workflows/           CI (тесты + сборка) и релиз (опубликованный релиз → zip с .app)
 ```
 
 ## Релиз
 
-Отправьте тег версии — GitHub Actions соберёт universal-приложение, упакует в zip и опубликует GitHub Release:
-
-```bash
-git tag v1.0.0 && git push origin v1.0.0
-```
+Откройте **Releases → Draft a new release**, создайте тег, например `v1.0.0`, нажмите **Generate release notes** и **Publish**. Через несколько минут GitHub Actions соберёт universal-приложение и прикрепит к релизу `LANA-Scanner-<версия>-macOS.zip` с контрольной суммой SHA-256.
 
 ## Благодарности
 
