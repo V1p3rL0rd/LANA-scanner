@@ -50,7 +50,7 @@ LANA Scanner finds every device on your LAN, shows its IP, hostname, MAC address
 Requires macOS 13+ and Xcode or the Command Line Tools (`xcode-select --install`), Swift 5.9+.
 
 ```bash
-git clone [<this-repo-url>](https://github.com/V1p3rL0rd/LANA-scanner) LANA-scanner && cd LANA-scanner
+git clone https://github.com/V1p3rL0rd/LANA-scanner LANA-scanner && cd LANA-scanner
 ./scripts/build-app.sh --install        # builds and installs "/Applications/LANA Scanner.app"
 ```
 
